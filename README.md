@@ -1,4 +1,4 @@
-# UK-Postcode-Validator
+# UK Postcode Validator
 Tool to read a CSV file containing UK postcodes and check whether or not they are valid.
 Each postcode is checked against a database of valid postcodes that the user specifies. A separate tool is included that allows for easy creation of the database.
 The tool also attempts to fix common postcode errors and appends eastings and northings to the data if the postcode is valid.
@@ -41,4 +41,5 @@ It is also useful (but not crucial) that you install these libraries too:
 - openpyxl
 - osgeo GDAL Python bindings
 
-# 
+# GPL
+PyQt5 is property of Riverbank Computing Limited and is used under the GNU General Public Licence v3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
