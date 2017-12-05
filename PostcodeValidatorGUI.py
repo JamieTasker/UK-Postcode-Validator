@@ -15,6 +15,9 @@ class Application(QMainWindow):
 
         self.db = db
         self.db_reader()
+        self.csv_location = ""
+        self.csv_out_location = ""
+
         self.mainwindow = loadUi(sys.path[0] + "/files/ui/mainwindow.ui", self)
         self.initui()
         self.mainwindow.show()
@@ -36,7 +39,7 @@ class Application(QMainWindow):
         if self.db == None:
             QMessageBox.critical(self, "No Postcode Database", "No Postcode database detected. Please run the Postcode"
                                                                " database creator to create a new database file.")
-            sys.exit(       )
+            sys.exit()
 
         postcode_db = sqlite3.connect(self.db)
         postcode_cursor = postcode_db.cursor()
@@ -44,33 +47,50 @@ class Application(QMainWindow):
 
     def input_file_dialog(self):
 
-        csv_location = QFileDialog.getOpenFileName(self, "Select a CSV File", '', "CSV Files (*.CSV)")[0]
-        if csv_location != "":
-           self.inputText.setText(csv_location)
-           self.firstHeadingCheck.setEnabled(True)
-           self.headingCombo.setEnabled(True)
-           self.outputText.setEnabled(True)
-           self.browseOutButton.setEnabled(True)
-            
-           self.csv_read_object = Csv_manipulation(csv_location, "r")
+        self.csv_location = QFileDialog.getOpenFileName(self, "Select a CSV File", '', "CSV Files (*.CSV)")[0]
+        if self.csv_location != "":
+           self.inputText.setText(self.csv_location)
+
+           self.csv_read_object = Csv_manipulation(self.csv_location, "r")
            self.headings = self.csv_read_object.get_headings()
            self.headingCombo.clear()
            self.headingCombo.addItems(self.headings)
         else:
             self.inputText.setText("Please select an input file...")
-            self.firstHeadingCheck.setEnabled(False)
-            self.headingCombo.setEnabled(False)
-            self.outputText.setEnabled(False)
-            self.browseOutButton.setEnabled(False)
+
+        self.valid_file_check()
 
     def output_file_dialog(self):
 
         self.csv_out_location = QFileDialog.getSaveFileName(self, "Select a save location", '', "CSV Files (*.CSV)")[0]
         if self.csv_out_location != "":
             self.outputText.setText(self.csv_out_location)
-            self.okButton.setEnabled(True)
         else:
             self.outputText.setText("Please select an output location...")
+
+        self.valid_file_check()
+
+    def valid_file_check(self):
+
+        if self.csv_location == self.csv_out_location:
+            QMessageBox.critical(self, "Duplicate files", "Error: Input and output files cannot share the same file path.")
+            self.csv_out_location = ""
+            self.outputText.setText("Please select an output location...")
+
+        if self.csv_location != "":
+           self.firstHeadingCheck.setEnabled(True)
+           self.headingCombo.setEnabled(True)
+           self.outputText.setEnabled(True)
+           self.browseOutButton.setEnabled(True)
+        else:
+           self.firstHeadingCheck.setEnabled(False)
+           self.headingCombo.setEnabled(False)
+           self.outputText.setEnabled(False)
+           self.browseOutButton.setEnabled(False)
+
+        if self.csv_location != "" and self.csv_out_location != "":
+            self.okButton.setEnabled(True)
+        else:
             self.okButton.setEnabled(False)
 
     def show_settings(self):
@@ -118,6 +138,7 @@ class Application(QMainWindow):
             self.csv_write_object.write_list(to_write)
         
         self.csv_write_object.close_csv()
+        self.csv_read_object.go_to_start()
         QMessageBox.information(self, "Process Complete!", "Process complete. Postcodes were successfully validated.")
 
 class Csv_manipulation(object):
@@ -132,7 +153,7 @@ class Csv_manipulation(object):
     def get_headings(self):
 
         headings = next(self.csv_reader)
-        self.csv_file.seek(0)
+        self.go_to_start()
 
         return headings
 
@@ -144,6 +165,10 @@ class Csv_manipulation(object):
     def skip_row(self):
 
         next(self.csv_reader)
+
+    def go_to_start(self):
+    	
+        self.csv_file.seek(0)
 
     def write_list(self, list_data):
 
@@ -168,6 +193,8 @@ class Settings_window(QDialog):
 
         self.cancelButton.clicked.connect(self.close)
         self.saveButton.clicked.connect(self.close)
+
+        self.defaultCombo.addItems([i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith("db")])
 
 class Db_selector(QDialog):
 
@@ -200,7 +227,6 @@ try:
     else:
         db_file = [i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith(".db")][0]
         db = sys.path[0] + "/files/db/" + db_file
-        print (db)
 except (IndexError, FileNotFoundError):
     db = None
 
