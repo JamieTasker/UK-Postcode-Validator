@@ -25,6 +25,11 @@ def database_creator(postcode_data):
 
     # Now we move onto creating the sqlite3 database.
     print("\nCreating database...")
+
+    # Check to see if the db directory already exists and create it if it doesn't.
+    if not os.path.exists(sys.path[0] + "/files/db/"):
+        os.makedirs(sys.path[0] + "/files/db/")
+
     # Create the database in the /files/db/ directory.
     masterdb = sqlite3.connect(sys.path[0] + "/files/db/" + db_name + ".db")
     c = masterdb.cursor()
