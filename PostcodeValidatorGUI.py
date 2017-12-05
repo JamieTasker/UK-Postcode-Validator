@@ -201,7 +201,7 @@ try:
         db_file = [i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith(".db")][0]
         db = sys.path[0] + "/files/db/" + db_file
         print (db)
-except IndexError:
+except (IndexError, FileNotFoundError):
     db = None
 
 
