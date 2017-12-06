@@ -33,6 +33,7 @@ class Application(QMainWindow):
         # Menu Bar
         self.actionExit.triggered.connect(self.close)
         self.actionSettings.triggered.connect(self.show_settings)
+        self.actionAbout.triggered.connect(self.show_about)
 
     def db_reader(self):
 
@@ -72,7 +73,7 @@ class Application(QMainWindow):
 
     def valid_file_check(self):
 
-        if self.csv_location == self.csv_out_location:
+        if self.csv_location == self.csv_out_location and self.csv_location != "":
             QMessageBox.critical(self, "Duplicate files", "Error: Input and output files cannot share the same file path.")
             self.csv_out_location = ""
             self.outputText.setText("Please select an output location...")
@@ -97,6 +98,14 @@ class Application(QMainWindow):
 
         self.mainwindow.setEnabled(False)
         settings_window_object = Settings_window()
+        del settings_window_object
+        self.mainwindow.setEnabled(True)
+
+    def show_about(self):
+
+        self.mainwindow.setEnabled(False)
+        about_window_object = About_window()
+        del about_window_object
         self.mainwindow.setEnabled(True)
 
     def postcode_validation(self):
@@ -167,7 +176,7 @@ class Csv_manipulation(object):
         next(self.csv_reader)
 
     def go_to_start(self):
-    	
+
         self.csv_file.seek(0)
 
     def write_list(self, list_data):
@@ -195,6 +204,21 @@ class Settings_window(QDialog):
         self.saveButton.clicked.connect(self.close)
 
         self.defaultCombo.addItems([i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith("db")])
+
+class About_window(QDialog):
+
+    def __init__(self):
+
+        super().__init__()
+
+        self.about_window = loadUi(sys.path[0] + "/files/ui/about.ui", self)
+        self.initui()
+        self.about_window.show()
+        self.exec_()
+
+    def initui(self):
+
+        self.doneButton.clicked.connect(self.close)
 
 class Db_selector(QDialog):
 
