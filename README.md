@@ -22,7 +22,7 @@ This is a very very early release, so expect many bugs and lots of unusable feat
 - Creating a postcode database using an OGR supported GIS vector format (e.g. ESRI SHP or MapInfo TAB).
 
 # Bugs
-Theres a lot of them. Chances are I know about the majority, but feel free to file any reports.
+There's a lot of them. Chances are I know about the majority, but feel free to file any reports.
 
 # Planned Features
 - Support for XLSX input/output files.
