@@ -10,10 +10,36 @@ QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 class Application(QMainWindow):
 
-    def __init__(self, db):
+    def __init__(self):
         super().__init__()
 
-        self.db = db
+        self.settings_object = Settings_params()
+        self.autocorrect_param, self.eastingnorthingparam, self.defaultdb = self.settings_object.pass_params()
+
+        try:
+            if len([i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith(".db")]) > 1 \
+                    and self.defaultdb == "False":
+                db_window = Db_selector()
+                self.db = db_window.db
+
+                if db_window.defaultdb != None:
+                    self.defaultdb = db_window.defaultdb
+                    self.settings_object.write_params((self.autocorrect_param, self.eastingnorthingparam, self.defaultdb))
+
+                del db_window
+
+            elif self.defaultdb != "False":
+                # Load the default DB.
+
+                self.db = sys.path[0] + "/files/db/" + self.defaultdb
+            else:
+                db_file = [i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith(".db")][0]
+                self.db = sys.path[0] + "/files/db/" + db_file
+        except (IndexError, FileNotFoundError):
+            QMessageBox.critical(self, "No Postcode Database", 'No Postcode database detected. Please run the Postcode'
+                                                               ' database creator to create a new database file.')
+            sys.exit()
+
         self.db_reader()
         self.csv_location = ""
         self.csv_out_location = ""
@@ -36,11 +62,6 @@ class Application(QMainWindow):
         self.actionAbout.triggered.connect(self.show_about)
 
     def db_reader(self):
-
-        if self.db == None:
-            QMessageBox.critical(self, "No Postcode Database", "No Postcode database detected. Please run the Postcode"
-                                                               " database creator to create a new database file.")
-            sys.exit()
 
         postcode_db = sqlite3.connect(self.db)
         postcode_cursor = postcode_db.cursor()
@@ -74,7 +95,8 @@ class Application(QMainWindow):
     def valid_file_check(self):
 
         if self.csv_location == self.csv_out_location and self.csv_location != "":
-            QMessageBox.critical(self, "Duplicate files", "Error: Input and output files cannot share the same file path.")
+            QMessageBox.critical(self, "Duplicate files",
+                                 'Error: Input and output files cannot share the same file path.')
             self.csv_out_location = ""
             self.outputText.setText("Please select an output location...")
 
@@ -97,8 +119,10 @@ class Application(QMainWindow):
     def show_settings(self):
 
         self.mainwindow.setEnabled(False)
-        settings_window_object = Settings_window()
+        settings_window_object = Settings_window((self.autocorrect_param, self.eastingnorthingparam, self.defaultdb),
+                                                 self.settings_object)
         del settings_window_object
+        self.autocorrect_param, self.eastingnorthingparam, self.defaultdb = self.settings_object.pass_params()
         self.mainwindow.setEnabled(True)
 
     def show_about(self):
@@ -148,7 +172,7 @@ class Application(QMainWindow):
         
         self.csv_write_object.close_csv()
         self.csv_read_object.go_to_start()
-        QMessageBox.information(self, "Process Complete!", "Process complete. Postcodes were successfully validated.")
+        QMessageBox.information(self, 'Process Complete!', "Process complete. Postcodes were successfully validated.")
 
 class Csv_manipulation(object):
 
@@ -187,11 +211,52 @@ class Csv_manipulation(object):
 
         self.csv_file.close()
 
-class Settings_window(QDialog):
+class Settings_params(object):
 
     def __init__(self):
 
+        try:
+            self.settings_file = open(sys.path[0] + "/files/config.cfg", "r")
+        except FileNotFoundError:
+            self.settings_file = open(sys.path[0] + "/files/config.cfg", "w")
+            self.settings_file.writelines(
+                "autocorrect=True\n"
+                "eastingnorthing=True\n"
+                "defaultdb=False")
+            self.settings_file.close()
+            self.settings_file = open(sys.path[0] + "/files/config.cfg", "r")
+
+        self.autocorrect = self.settings_file.readline().split("=")[1].replace("\n", "")
+        self.eastingnorthing = self.settings_file.readline().split("=")[1].replace("\n", "")
+        self.defaultdb = self.settings_file.readline().split("=")[1].replace("\n", "")
+
+    def pass_params(self):
+
+        return self.autocorrect, self.eastingnorthing, self.defaultdb
+
+    def write_params(self, params):
+
+        self.autocorrect = params[0]
+        self.eastingnorthing = params[1]
+        self.defaultdb = params[2]
+
+        self.settings_file.close()
+        self.settings_file = open(sys.path[0] + "/files/config.cfg", "w")
+
+        self.settings_file.write("autocorrect=" + self.autocorrect + "\n")
+        self.settings_file.write("eastingnorthing=" + self.eastingnorthing + "\n")
+        self.settings_file.write("defaultdb=" + self.defaultdb + "\n")
+
+        self.settings_file.close()
+
+class Settings_window(QDialog):
+
+    def __init__(self, params, settings_object):
+
         super().__init__()
+
+        self.autocorrect, self.eastingnorthing, self.defaultdb = params
+        self.settings_object = settings_object
 
         self.settings_window = loadUi(sys.path[0] + "/files/ui/settings.ui", self)
         self.initui()
@@ -201,9 +266,48 @@ class Settings_window(QDialog):
     def initui(self):
 
         self.cancelButton.clicked.connect(self.close)
-        self.saveButton.clicked.connect(self.close)
+        self.saveButton.clicked.connect(self.re_write_settings)
+        self.defaultCheck.stateChanged.connect(self.default_toggle)
 
         self.defaultCombo.addItems([i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith("db")])
+        if self.defaultdb != "False":
+            self.defaultCheck.setChecked(True)
+            combo_index = self.defaultCombo.findText(self.defaultdb)
+            self.defaultCombo.setCurrentIndex(combo_index)
+        else:
+            self.defaultCombo.setEnabled(False)
+
+        if self.autocorrect == "True":
+            self.correctinvalidCheck.setChecked(True)
+        if self.eastingnorthing == "True":
+            self.appendcoordsCheck.setChecked(True)
+
+    def default_toggle(self):
+
+        if self.defaultCheck.isChecked():
+            self.defaultCombo.setEnabled(True)
+        else:
+            self.defaultCombo.setEnabled(False)
+
+    def re_write_settings(self):
+
+        if self.correctinvalidCheck.isChecked():
+            self.autocorrect = "True"
+        else:
+            self.autocorrect = "False"
+
+        if self.appendcoordsCheck.isChecked():
+            self.eastingnorthing = "True"
+        else:
+            self.eastingnorthing = "False"
+
+        if self.defaultCheck.isChecked():
+            self.defaultdb = str(self.defaultCombo.currentText())
+        else:
+            self.defaultdb = "False"
+
+        self.settings_object.write_params((self.autocorrect, self.eastingnorthing, self.defaultdb))
+        self.close()
 
 class About_window(QDialog):
 
@@ -239,21 +343,15 @@ class Db_selector(QDialog):
     def confirm_selection(self):
 
         self.db = sys.path[0] + "/files/db/" + str(self.dbCombo.currentText())
+
+        if self.defaultCheck.isChecked():
+            self.defaultdb = str(self.dbCombo.currentText())
+        else:
+            self.defaultdb = None
+
         self.close()
 
 # Main
 app = QApplication(sys.argv)
-try:
-    if len([i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith(".db")]) > 1:
-        db_window = Db_selector()
-        db = db_window.db
-        del db_window
-    else:
-        db_file = [i for i in os.listdir(sys.path[0] + "/files/db/") if i.endswith(".db")][0]
-        db = sys.path[0] + "/files/db/" + db_file
-except (IndexError, FileNotFoundError):
-    db = None
-
-
-ex = Application(db)
+ex = Application()
 sys.exit(app.exec_())
