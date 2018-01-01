@@ -2,6 +2,8 @@
 # Takes a full GB postcode and attempts to correct common errors.
 # Created by Jamie Tasker on 05/11/2017.
 
+from fuzzywuzzy import process
+
 # The Postcode class accepts a string object.
 class Postcode(object):
     """"A Postcode object"""
@@ -143,3 +145,11 @@ class Postcode(object):
 
         # Finally, we join the split string back together and return it.
         return "".join(new_postcode)
+
+    def fuzzy_logic(self, postcode_list, tolerance):
+
+        fuzzy_match = process.extractOne(self.postcode, postcode_list)
+        if fuzzy_match[1] >= tolerance:
+            return fuzzy_match
+        else:
+            return "No Match", 0
