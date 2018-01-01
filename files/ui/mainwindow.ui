@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
-    <height>238</height>
+    <width>451</width>
+    <height>266</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -53,52 +53,24 @@
       <property name="rightMargin">
        <number>10</number>
       </property>
-      <item row="2" column="1">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="inputText">
+        <property name="text">
+         <string>Please select an input file...</string>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
        <widget class="QComboBox" name="headingCombo">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Input File:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="firstHeadingCheck">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Use first row as headings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Postcode Field:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="browseButton">
-        <property name="text">
-         <string>Browse</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Output File:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
+      <item row="4" column="2">
        <widget class="QPushButton" name="browseOutButton">
         <property name="enabled">
          <bool>false</bool>
@@ -108,7 +80,21 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Postcode Field:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="browseButton">
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
        <widget class="QLineEdit" name="outputText">
         <property name="enabled">
          <bool>false</bool>
@@ -121,15 +107,39 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="inputText">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Please select an input file...</string>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
+         <string>Input File:</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="firstHeadingCheck">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Use first row as headings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Output File:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Current Database:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="currentdbCombo"/>
       </item>
      </layout>
     </item>
@@ -254,7 +264,7 @@ https://www.github.com/jamietasker</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>489</width>
+     <width>451</width>
      <height>21</height>
     </rect>
    </property>
