@@ -9,15 +9,12 @@ This is a very very early release, so expect many bugs and lots of unusable feat
 - Create a postcode database using OS CodePoint Open data.
 - Create a postcode database using a user specified CSV file.
 - Support for multiple Postcode Databases (For example, you could validate postcodes against OS CodePoint Open or an address gazetteer).
-- Read in and validate CSV files containing postcodes
-- Attempt to fix common user input errors associated with postcodes
+- Read in and validate CSV files containing postcodes.
+- Attempt to fix common user input errors associated with postcodes.
+- Use fuzzy logic to try and find the nearest postcode match.
 - Append Eastings and Northings to the output data.
 
 # What does not work?
-- Setting a default postcode database.
-- Disabling functionality to automatically correct postcodes.
-- Disabling functionality to automatically append eastings and northings.
-- The entire settings window is broken.
 - Creating a postcode database using an Excel Spreadsheet in XLSX format.
 - Creating a postcode database using an OGR supported GIS vector format (e.g. ESRI SHP or MapInfo TAB).
 
@@ -36,10 +33,12 @@ The application is written in Python using PyQt5 as a GUI toolkit. It was develo
 
 In order to run from the Python source code, you must install the following libraries:
 - PyQt5
+- fuzzywuzzy
 
 It is also useful (but not crucial) that you install these libraries too:
 - openpyxl
 - osgeo GDAL Python bindings
+- python-Levenshtein
 
 # GPL
 PyQt5 is property of Riverbank Computing Limited and is used under the GNU General Public Licence v3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
