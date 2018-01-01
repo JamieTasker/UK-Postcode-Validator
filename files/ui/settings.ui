@@ -7,26 +7,25 @@
     <x>0</x>
     <y>0</y>
     <width>335</width>
-    <height>186</height>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="correctinvalidCheck">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, the application will automatically try to fix common user errors when entering postcodes. &lt;/p&gt;&lt;p&gt;Example: NG!3ODJ will become NG13 0DJ.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Settings</string>
+      <string>Attempt to automatically correct invalid postcodes</string>
      </property>
     </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QComboBox" name="defaultCombo"/>
    </item>
    <item row="1" column="0">
     <widget class="Line" name="line">
@@ -35,31 +34,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="correctinvalidCheck">
-     <property name="text">
-      <string>Attempt to automatically correct invalid postcodes</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="appendcoordsCheck">
-     <property name="text">
-      <string>Append easting and northing information to output</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QCheckBox" name="defaultCheck">
-     <property name="text">
-      <string>Use default database if more than one is available:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QComboBox" name="defaultCombo"/>
-   </item>
-   <item row="6" column="0">
+   <item row="10" column="0">
     <layout class="QFormLayout" name="formLayout">
      <property name="leftMargin">
       <number>150</number>
@@ -75,6 +50,99 @@
       <widget class="QPushButton" name="saveButton">
        <property name="text">
         <string>Save</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QCheckBox" name="appendcoordsCheck">
+     <property name="text">
+      <string>Append easting and northing information to output</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="fuzzyCheck">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use fuzzy logic to try and find the nearest postcode match within the database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Try to find closest postcode match (slow)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QCheckBox" name="defaultCheck">
+     <property name="text">
+      <string>Use default database if more than one is available:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Settings</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="fuzzytoleranceLabel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Closest postcode match tolerance:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QSlider" name="fuzzySlider">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change the tolerance level when trying to find closest postcode match within the database.&lt;/p&gt;&lt;p&gt;Higher values will result in fewer matches, but a greater level of accuracy.&lt;/p&gt;&lt;p&gt;Lower values will return more matches, but a lower level of accuracy. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="minimum">
+        <number>-1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="sliderPosition">
+        <number>0</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="fuzzySpin">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change the tolerance level when trying to find closest postcode match within the database.&lt;/p&gt;&lt;p&gt;Higher values will result in fewer matches, but a greater level of accuracy.&lt;/p&gt;&lt;p&gt;Lower values will return more matches, but a lower level of accuracy.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="maximum">
+        <number>100</number>
        </property>
       </widget>
      </item>
