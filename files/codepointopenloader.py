@@ -22,7 +22,7 @@ def codepoint_open_load(csv_path):
                 # The postcode data is always in index position 0.
                 postcode = row[0]
 
-                if " " not in postcode:
+                if " " not in list(postcode):
                     # OS CodePoint Open does not have spaces in their postcode data. We thus need to insert them using
                     # by splitting the string and adding them to index position -3.
                     split = [i for i in list(postcode) if i != " "]
